@@ -1,4 +1,4 @@
-# Game Template
+# HTML Game Template
 
 This template provides a simple HTML framework for creating a grid-based game using a canvas element. The game loop is handled using `requestAnimationFrame` to ensure smooth animations.
 
