@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Game</title>
+    <style>
+        /* Add your CSS code here */
+        #gameCanvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="gameCanvas" width="256" height="256"></canvas>
+
+<script>
+    // Get a reference to the canvas and the rendering context
+    const canvas = document.getElementById('gameCanvas');
+    const context = canvas.getContext('2d');
+
+    // Define the desired frame rate
+    const fps = 30;
+    const frameDuration = 1000 / fps;
+
+    // Save the time of the last rendered frame
+    let lastFrameTime = 0;
+
+    // Define the grid size and cell size
+    const gridRows = 16;
+    const gridColumns = 16;
+    const cellSize = 16;
+
+    // Define your update and render functions
+    function update() {
+        // Update the game state
+    }
+
+    function render() {
+        // Clear the canvas
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw the grid
+        for (let row = 0; row < gridRows; row++) {
+            for (let col = 0; col < gridColumns; col++) {
+                const x = col * cellSize;
+                const y = row * cellSize;
+                context.strokeRect(x, y, cellSize, cellSize);
+            }
+        }
+    }
+
+    // Define the game loop function
+    function gameLoop(timestamp) {
+        const deltaTime = timestamp - lastFrameTime;
+        if (deltaTime >= frameDuration) {
+            lastFrameTime = timestamp;
+            update();
+            render();
+        }
+        requestAnimationFrame(gameLoop);
+    }
+
+    // Start the game loop
+    requestAnimationFrame(gameLoop);
+
+</script>
+
+</body>
+</html>
