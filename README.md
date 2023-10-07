@@ -32,4 +32,4 @@ Feel free to fork this repository and make changes, or open issues and pull requ
 
 ## License
 
-This project is open source and available under the [The Unlicense](https://unlicense.org/).
+This project is open source and available under the [The Unlicense](LICENSE).
