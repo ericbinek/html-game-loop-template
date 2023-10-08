@@ -10,27 +10,38 @@
         #gameCanvas {
             border: 1px solid black;
         }
+
+        input,
+        button {
+            width: 128px;
+            text-align: center;
+        }
     </style>
 </head>
 
 <body>
 
-    <canvas id="gameCanvas" width="256" height="256"></canvas>
-
-    <input type="text" name="tick" id="tick" value="">
-
-    <button id="startButton">Start</button>
-    <button id="stopButton">Stop</button>
-
-
+    <div>
+        <canvas id="gameCanvas" width="256" height="256"></canvas>
+    </div>
+    <div>
+        <button id="startButton">Start</button>
+        <input type="text" name="tick" id="tick" value="0" readonly>
+        <button id="stopButton">Stop</button>
+    </div>
+    <div>
+        <button id="increaseFPS">Increase FPS</button>
+        <input type="text" name="fps" id="fps" value="10" readonly>
+        <button id="decreaseFPS">Decrease FPS</button>
+    </div>
     <script>
         // Get a reference to the canvas and the rendering context
         const canvas = document.getElementById('gameCanvas');
         const context = canvas.getContext('2d');
 
         // Define the desired frame rate
-        const fps = 30;
-        const frameDuration = 1000 / fps;
+        let fps = 10;
+        let frameDuration = 1000 / fps;
 
         // Save the time of the last rendered frame
         let lastFrameTime = 0;
@@ -83,16 +94,38 @@
 
         document.getElementById('startButton').addEventListener('click', startGame);
         document.getElementById('stopButton').addEventListener('click', stopGame);
+        document.getElementById('increaseFPS').addEventListener('click', increaseFPS);
+        document.getElementById('decreaseFPS').addEventListener('click', decreaseFPS);
 
         function startGame() {
             if (!isRunning) {
                 isRunning = true;
+                updateFrameDuration();
                 requestAnimationFrame(gameLoop);  // Start the game loop
             }
         }
 
         function stopGame() {
             isRunning = false;
+        }
+
+        function increaseFPS() {
+            if (fps < 60) { // Ensures FPS doesn't go above 60
+                fps += 10;
+                updateFrameDuration();
+            }
+        }
+
+        function decreaseFPS() {
+            if (fps >= 10) { // Ensures FPS doesn't go below 0
+                fps -= 10;
+                updateFrameDuration();
+            }
+        }
+
+        function updateFrameDuration() {
+            document.getElementById('fps').value = fps;
+            frameDuration = 1000 / fps;
         }
 
     </script>
