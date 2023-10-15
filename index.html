@@ -26,7 +26,10 @@
 </head>
 
 <body>
-
+    <div>
+        <button id="saveGame">Save Game</button>
+        <button id="loadGame">Load Game</button>
+    </div>
     <div>
         <canvas id="gameCanvas" width="512" height="512"></canvas>
     </div>
@@ -156,6 +159,8 @@
         // Start the game loop
         requestAnimationFrame(gameLoop);
 
+        document.getElementById('saveGame').addEventListener('click', saveGameState);
+        document.getElementById('loadGame').addEventListener('click', loadGameState);
         document.getElementById('startButton').addEventListener('click', startGame);
         document.getElementById('stopButton').addEventListener('click', stopGame);
         document.getElementById('increaseFPS').addEventListener('click', increaseFPS);
@@ -192,6 +197,42 @@
             document.getElementById('fps').value = fps;
             frameDuration = 1000 / fps;
         }
+
+        function saveGameState() {
+            try {
+                stopGame();
+                const gameState = {
+                    tick: tick,
+                    grid: grid,
+                    gridStats: gridStats
+                };
+                localStorage.setItem('gameState', JSON.stringify(gameState));
+                alert('SAVED');
+                startGame();
+            } catch (e) {
+                console.error('Error saving game state to LocalStorage:', e);
+                alert('Error saving game state.');
+            }
+        }
+
+
+        function loadGameState() {
+            const savedGameState = localStorage.getItem('gameState');
+            if (savedGameState) {
+                stopGame();
+                const gameState = JSON.parse(savedGameState);
+                if (gameState.tick !== undefined && gameState.grid && gameState.gridStats) {
+                    tick = gameState.tick;
+                    grid = gameState.grid;
+                    gridStats = gameState.gridStats;
+                    alert('LOADED');
+                } else {
+                    alert('Error loading game state.');
+                }
+                startGame();
+            }
+        }
+
 
     </script>
 
