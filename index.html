@@ -7,8 +7,14 @@
     <title>My Game</title>
     <style>
         /* Add your CSS code here */
-        #gameCanvas {
+        #gameCanvas,
+        #statsCanvas {
             border: 1px solid black;
+        }
+
+        #statsCanvas {
+            visibility: hidden;
+            display: none;
         }
 
         input,
@@ -22,7 +28,7 @@
 <body>
 
     <div>
-        <canvas id="gameCanvas" width="256" height="256"></canvas>
+        <canvas id="gameCanvas" width="512" height="512"></canvas>
     </div>
     <div>
         <button id="startButton">Start</button>
@@ -34,10 +40,22 @@
         <input type="text" name="fps" id="fps" value="10" readonly>
         <button id="decreaseFPS">Decrease FPS</button>
     </div>
+    <div>
+        <button id="showStats">Show Stats</button>
+    </div>
+    <div>
+        <canvas id="statsCanvas" width="512" height="512"></canvas>
+    </div>
     <script>
         // Get a reference to the canvas and the rendering context
         const canvas = document.getElementById('gameCanvas');
         const context = canvas.getContext('2d');
+
+        const statsCanvas = document.getElementById('statsCanvas');
+        const statsContext = statsCanvas.getContext('2d');
+
+
+        let showStats = false;
 
         // Define the desired frame rate
         let fps = 10;
@@ -52,7 +70,23 @@
         // Define the grid size and cell size
         const gridRows = 16;
         const gridColumns = 16;
-        const cellSize = 16;
+        const cellSize = 32;
+
+        let grid = [];
+        for (let x = 0; x < gridColumns; x++) {
+            grid[x] = [];
+            for (let y = 0; y < gridRows; y++) {
+                grid[x][y] = { load: 0 };
+            }
+        }
+
+        let gridStats = [];
+        for (let x = 0; x < gridColumns; x++) {
+            gridStats[x] = [];
+            for (let y = 0; y < gridRows; y++) {
+                gridStats[x][y] = { visits: 0, resets: 0 };
+            }
+        }
 
         // Define your update and render functions
         function update() {
@@ -60,6 +94,17 @@
             tick++;
 
             document.getElementById('tick').value = tick;
+
+            const x = Math.floor(Math.random() * gridColumns);
+            const y = Math.floor(Math.random() * gridRows);
+
+            if (grid[x][y].load >= cellSize / 2 - 1) {
+                gridStats[x][y].resets++;
+                grid[x][y].load = 0;
+            } else {
+                grid[x][y].load++;
+                gridStats[x][y].visits++;
+            }
         }
 
         function render() {
@@ -67,14 +112,32 @@
             context.clearRect(0, 0, canvas.width, canvas.height);
 
             // Draw the grid
-            for (let row = 0; row < gridRows; row++) {
-                for (let col = 0; col < gridColumns; col++) {
-                    const x = col * cellSize;
-                    const y = row * cellSize;
-                    context.strokeRect(x, y, cellSize, cellSize);
+            for (let x = 0; x < gridColumns; x++) {
+                for (let y = 0; y < gridRows; y++) {
+                    // context.lineWidth = grid[x][y].load;
+                    context.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                    context.fillText(`${grid[x][y].load}`, x * cellSize + cellSize / 2 - 10 / 2 + 1, y * cellSize + cellSize / 2 + 1);
                 }
             }
         }
+
+        function renderStats() {
+            if (showStats) {
+                // Clear the stats canvas
+                statsContext.clearRect(0, 0, statsCanvas.width, statsCanvas.height);
+                statsContext.font = "10px Arial";
+
+                // Draw the statistics grid and display statistics
+                for (let y = 0; y < gridRows; y++) {
+                    for (let x = 0; x < gridColumns; x++) {
+                        // statsContext.lineWidth = grid[y][x].load;
+                        statsContext.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                        statsContext.fillText(`${gridStats[x][y].resets}`, x * cellSize + cellSize / 2 - 10 / 2 + 1, y * cellSize + cellSize / 2 + 1);
+                    }
+                }
+            }
+        }
+
 
         // Define the game loop function
         function gameLoop(timestamp) {
@@ -84,7 +147,8 @@
             if (deltaTime >= frameDuration) {
                 lastFrameTime = timestamp;
                 update();
-                render();
+                render();          // Render the game
+                renderStats();     // Render the statistics
             }
             requestAnimationFrame(gameLoop);  // Request the next frame
         }
@@ -96,6 +160,7 @@
         document.getElementById('stopButton').addEventListener('click', stopGame);
         document.getElementById('increaseFPS').addEventListener('click', increaseFPS);
         document.getElementById('decreaseFPS').addEventListener('click', decreaseFPS);
+        document.getElementById('showStats').addEventListener('click', () => { showStats = !showStats; document.getElementById('statsCanvas').style.visibility = showStats ? "visible" : "hidden"; document.getElementById('statsCanvas').style.display = showStats ? "block" : "none"; });
 
         function startGame() {
             if (!isRunning) {
