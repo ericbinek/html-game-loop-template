@@ -1,15 +1,19 @@
 # HTML Game Template
-
-This template provides a basic framework for creating a grid-based game using an HTML canvas element. It includes a game loop handled via `requestAnimationFrame` to ensure smooth animations.
+This template provides a basic framework for creating a grid-based game using an HTML canvas element. The game's state can be saved and loaded from the browser's LocalStorage, allowing players to continue their game even after closing and reopening the browser.
 
 ## Features
 
 - 16x16 grid with each cell being 16x16 pixels.
-- Basic game loop setup with `requestAnimationFrame`.
+- Basic game loop setup with `requestAnimationFrame` to ensure smooth animations.
 - Simple rendering function to draw the grid on the canvas.
 - Start and Stop feature to control the game loop.
 - Tick counter to track the game progress.
 - Dynamic FPS (Frames Per Second) adjustment feature for testing under different frame rates or adjusting game speed.
+- **LocalStorage Integration:**
+   - Save the current game state to LocalStorage.
+   - Load the game state from LocalStorage during game initialization.
+   - UI buttons that allow users to manually save or load their game state.
+   - Comprehensive error handling for potential issues when accessing or interacting with LocalStorage.
 
 ## Usage
 
@@ -24,9 +28,9 @@ This template provides a basic framework for creating a grid-based game using an
 - Change the grid size and cell size by updating the `gridRows`, `gridColumns`, and `cellSize` constants.
 - Add your game logic in the `update` function.
 - Draw your game state in the `render` function.
+- Integrate LocalStorage persistence by utilizing the provided `saveGameState` and `loadGameState` functions.
 - Add your CSS styles within the style tag in the head section of `index.html`.
-- Utilize the Start and Stop buttons to control the game loop.
-- Use the Increase FPS and Decrease FPS buttons to dynamically adjust the game's frame rate.
+- Utilize the Start, Stop, Save Game, and Load Game buttons to control the game loop and game state persistence.
 
 ## FPS Management
 
